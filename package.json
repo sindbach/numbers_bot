@@ -1,0 +1,16 @@
+{
+  "name": "stitch-hr",
+  "version": "0.0.1",
+  "description": "HR Application Example",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git"
+  },
+  "dependencies": {
+    "express": "^4.15.3",
+    "mongodb-stitch-server-sdk": "^4"
+  }
+}
