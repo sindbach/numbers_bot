@@ -1,0 +1,85 @@
+<html>
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+  <script src="https://s3.amazonaws.com/stitch-sdks/js/bundles/4/stitch.js"></script>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+  <style>
+    #number {
+      font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    #number td, #number th {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    
+    #number tr:nth-child(even){background-color: #f2f2f2;}
+    
+    #number tr:hover {background-color: #ddd;}
+    
+    #number th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #4CAF50;
+      color: white;
+    }
+    </style>
+</head>
+<body>
+  <div class="content">
+    <div id="greeting">Loading .. </div>
+  </br>
+    <div id="entries"></div>
+  </div>
+</body>
+
+<script type="text/javascript">
+  // Initialize the App Client
+  const client = stitch.Stitch.initializeDefaultAppClient("bot-isplc");
+  // Get a MongoDB Service Client
+  const mongodb = client.getServiceClient(
+    stitch.RemoteMongoClient.factory,
+    "mongodb-atlas"
+  );
+  client.auth.loginWithCredential(new stitch.AnonymousCredential())
+    .then(authedUser => {
+      document.getElementById("greeting").innerHTML = `<div><h2>Welcome to Numbers!<h2/></div>`;
+      buildTable();
+    })
+    .catch(err => console.error(`login failed with error: ${err}`));
+
+  function buildTable() {
+    let table = document.createElement("Table"); 
+    table.id = "number";
+    table.border = "1"; 
+    // Get the count of columns.
+    let columnCount = 7;
+    // Add the header row.
+    let rowCount = -1;
+    let row = table.insertRow(rowCount);
+    for (let i = 0; i < columnCount; i++) {
+      let headerCell = document.createElement("TH");
+      headerCell.innerHTML = i+1;
+      row.appendChild(headerCell);
+    }
+    // Add the data rows.
+    for (let x=0; x<4; x++){
+      client.callFunction("random").then(numbers => {
+        row = table.insertRow(rowCount);
+        console.log(numbers);        
+        for (var j = 0; j < columnCount; j++) {
+          var cell = row.insertCell(-1);
+          cell.innerHTML = numbers[j];
+        }
+      });
+    }
+    var dvTable = document.getElementById("entries");
+    dvTable.innerHTML = "";
+    dvTable.appendChild(table);
+  }
+</script>
+
+</html>
